@@ -5,15 +5,15 @@ from datetime import datetime
 
 now = datetime.now()
 now = datetime.now()
-hour_formated = now.strftime("%H:%M")
-day_formated = now.strftime("%d/%m/%Y")
+hour_formated = now.strftime("%H:%M") #get hour data
+day_formated = now.strftime("%d/%m/%Y") #get day data
 
 operations_available = {
     "+": lambda a,b: (f"{a} + {b} = {a+b}"),
     "-": lambda a,b: (f"{a} - {b} = {a-b}"),
     "*": lambda a,b: (f"{a} * {b} = {a*b}"),
     "/": lambda a,b: (f"{a} / {b} = {a/b}") 
-}
+} #lambda for each operation type
 
 #function input --> get datas from user
 def WelcomeUser():
@@ -25,13 +25,13 @@ def WelcomeUser():
         bdayYear = True
     name = input("What is your name? ")
     age = int(input("How old are you? "))
-    yearBorn = year - age - (0 if bdayYear else 1)
+    yearBorn = year - age - (0 if bdayYear else 1) #remove 1 year from year born if already make birthday or 0 if not
     user = {
         "Name": name,
         "Year Born": yearBorn,
         "Age": age
     }
-    return user
+    return user #return a dict with all user info
 
 #function output
 def show_user_data(user):
@@ -40,36 +40,36 @@ def show_user_data(user):
         print(user_datas)
 #function output
 def operation(op,n1,n2):
-    return operations_available[op](n1,n2)
+    return operations_available[op](n1,n2) #use the dict with lambdas to execute each operations
 
-def validate_number(msg):
-    while True:
+def validate_number(msg): #number validate, to see if the number is an integer
+    while True: 
         try:
-            return int(input(msg))
-        except ValueError:
+            return int(input(msg)) #for now only accept int values from input
+        except ValueError: #if number insert not an integer type
             print("Invalid number. Try again.")
-def get_valid_operation(operation):
-        while operation not in operations_available:
+def get_valid_operation(operation): #operation verification, i only want operations inputs availables
+        while operation not in operations_available: #if the operations type not is includede in operations available dict
             print("Invalid operation, select only one of them:(+,-,/,*)")
-            operation = input("Which operation do you wanna make((+)/(-)/(*)/(/))? ").strip()
-        return operation
+            operation = input("Which operation do you wanna make((+)/(-)/(*)/(/))? ").strip() #strip to remove blank spaces
+        return operation # when it get out loop
             
             
-def get_operation():
-    return input("Which operation do you wanna make((+)/(-)/(*)/(/))? ").strip()
+def get_operation(): #get input operation
+    return input("Which operation do you wanna make((+)/(-)/(*)/(/))? ").strip() #strip to remove blank spaces
 
-def get_numbers():
+def get_numbers(): #input function
     num1 = validate_number(("Type the first number: "))
     num2 = validate_number(("Type the second number: "))
     return num1, num2
-def calculate(op,n1,n2):
+def calculate(op,n1,n2):#executable function
     result = operation(op, n1, n2)
     return result
 
-def exit_program(user,op,n1,n2):
+def exit_program(user,op,n1,n2): #this function was created to set a flag when the users want to get out
     return "EXIT"
 
-menu = {
+menu = { #dict with functions inserted
     "1": calculate,
     "2": show_user_data,
     "3": exit_program
@@ -98,11 +98,17 @@ def add_user(userdata, file="userinfos.json"):
 
 def main():
     user = WelcomeUser()
-    user_datas_tuple = {} #stophere
+    user_datas_dict = user.copy()
+    user_datas_dict.update({
+        "Hours": hour_formated,
+        "Day": day_formated
+    })
+    add_user(user_datas_dict)
 
 
 
     print(f"Welcome, Mr {user['Name']}, born in {user['Year Born']}, you receive an access to the JVBCalculator")
+    
     """
     jsonusers = json.dumps(user)
     with open("userinfos.json", "a") as userinfojson:
