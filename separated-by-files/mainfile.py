@@ -1,5 +1,4 @@
 import time
-import os
 from datetime import datetime
 import userFunctions
 import calculate_file
