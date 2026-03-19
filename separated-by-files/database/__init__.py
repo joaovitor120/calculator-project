@@ -1,1 +1,3 @@
 from database.database_settings import add_math_challenge_datas
+from database.database_settings import begginer_settings
+from database.database_settings import get_calculator_history

@@ -2,7 +2,12 @@ import random
 import time
 import math
 from database import add_math_challenge_datas
+from datetime import datetime
 
+
+now = datetime.now()
+hour_formated = now.strftime("%H:%M") #get hour data
+day_formated = now.strftime("%d/%m/%Y") #get day data
 levels = ['1','2','3','4']
 levels_qtd = len(levels)
 calc_types = ['1','2']
@@ -158,8 +163,6 @@ def answer_retry_loop(num1,num2, op_symbol,user_result_answer, result, multiple_
     answer_status = validate_calculation(user_result_answer, result)
     while answer_status == False:
         print("Wrong answer, try again: ")
-        print(result)
-        #print(result)
         if multiple_operations:
             try:
                 user_result_answer = int(input(multiple_operations))
@@ -169,8 +172,11 @@ def answer_retry_loop(num1,num2, op_symbol,user_result_answer, result, multiple_
             user_result_answer = int(input(f"{num1} {op_symbol} {num2} = "))
         answer_status = validate_calculation(user_result_answer, result)
 
-def generate_challenge(difficulty, op_min, op_max):
-    num1, num2, op_symbol = get_calculator_datas(ranges_min(difficulty), ranges_med(difficulty), ranges_max(difficulty),op_min,op_max)
+def generate_challenge(difficulty, op_min, op_max, last_num=False):
+    if last_num:
+        num1, num2, op_symbol = get_calculator_datas(ranges_min(difficulty), ranges_med(difficulty), ranges_max(difficulty),op_min,op_max - 1)
+    else:
+        num1, num2, op_symbol = get_calculator_datas(ranges_min(difficulty), ranges_med(difficulty), ranges_max(difficulty),op_min,op_max)
     result = operations_type[op_symbol](num1, num2)
     num2, op_symbol, result = ensure_integer_result_simple(result,num1,num2,op_symbol,ranges_min(difficulty), ranges_med(difficulty),op_min,op_max)
     num1, num2, result = force_expoent_two(result, num1,num2,op_symbol, ranges_med(difficulty), ranges_max(difficulty))
@@ -202,21 +208,20 @@ def challenge_simple(difficulty, op_min, op_max):
     end_time = end_timer()
     execution_time = end_time - start_time
     print(f"Perfect, you answered correctly in {int(execution_time)} seconds, congratulations!")
-    add_math_challenge_datas(expression, final_result)
+    add_math_challenge_datas(expression, final_result, hour_formated, day_formated)
 def challenge_complex(difficulty, op_min, op_max):
     num1, num2, op_symbol, result_0 = generate_challenge(difficulty, op_min, op_max)
                     
-    num3, num4, op_symbol_1, result_1 = generate_challenge(difficulty, op_min, op_max)
+    num3, num4, op_symbol_1, result_1 = generate_challenge(difficulty, op_min, op_max, last_num=True)
 
-        
-    op_symbol_2 = random.choice((operations_list)[op_min:op_max])
+    if op_max == operations_list_length-1:
+        op_symbol_2 = random.choice((operations_list)[op_min:op_max-1])
+    else:
+        op_symbol_2 = random.choice((operations_list)[op_min:op_max])
     #print(op_symbol_2)
     final_result = operations_type[op_symbol_2](result_0, result_1)
     result_1, op_symbol_2, final_result = ensure_integer_result_simple(final_result,result_0,result_1,op_symbol_2,ranges_min(difficulty), ranges_med(difficulty),op_min, op_max)
     #print(op_symbol_2)
-    if op_symbol_2 == "**":
-        op_symbol_2 = random.choice((operations_list)[op_min:4])
-        final_result = operations_type[op_symbol_2](result_0, result_1)
     expression = f"({num1} {op_symbol} {num2}) {op_symbol_2} ({num3} {op_symbol_1} {num4}) = "
 
     start_time = init_timer()                           
@@ -225,7 +230,7 @@ def challenge_complex(difficulty, op_min, op_max):
     end_time = end_timer()
     execution_time = end_time - start_time
     print(f"Perfect, your answer correctly in {int(execution_time)} seconds, congratulations!") 
-    add_math_challenge_datas(expression, final_result)
+    add_math_challenge_datas(expression, final_result, hour_formated, day_formated)
 
 def math_challenges():
     running = True
@@ -240,7 +245,7 @@ def math_challenges():
 
                 
         if calc_type_complex == '2':
-                challenge_complex(difficulty_map[difficult], op_min, op_max)###############
+                challenge_complex(difficulty_map[difficult], op_min, op_max)
         return_to_menu_msg = 'Do you want to return to main menu to execute another functions(Y/N)? '
         return_to_menu_input = input(return_to_menu_msg).upper().strip()
         return_to_menu_msg_options = ['Y', 'N']

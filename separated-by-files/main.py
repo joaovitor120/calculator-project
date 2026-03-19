@@ -6,6 +6,9 @@ import menu_functions
 from json_files import json_insert_data
 import sqlite3
 import uuid
+from database import begginer_settings, get_calculator_history
+
+begginer_settings() # to create databases if not exists
 
 user_id = uuid.uuid4().bytes #to be insert in sqlite
 now = datetime.now()
@@ -21,6 +24,8 @@ day_formated = now.strftime("%d/%m/%Y") #get day data
 } #lambda for each operation type"""
 
 calcinfos_path = "./json_files/calcinfos.json"
+user_csv_path = "./csv_exported/User_data.csv"
+calc_csv_path = "./csv_exported/Calc_datas.csv"
 
 connection = sqlite3.connect("./database/database.db")
 cursor = connection.cursor()
@@ -29,28 +34,7 @@ columns_calc = ["CalcType", "Operation", "Hours", "Day", "User"]
 tables_formatted = (", ".join(i for i in columns_user)) #to use in the sqlite command
 tables_formatted_calc = (", ".join(i for i in columns_calc))
 
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS User 
-    (
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        Name TEXT NOT NULL,
-        Year_born INTEGER NOT NULL,
-        Age INTEGER NOT NULL,
-        Hours TEXT NOT NULL,
-        Day TEXT NOT NULL
-        )
-""")
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS CalcInfos 
-    (
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        CalcType TEXT NOT NULL,
-        Operation TEXT NOT NULL,
-        Hours TEXT NOT NULL,
-        Day TEXT NOT NULL,
-        User TEXT NOT NULL
-        )
-""")
+
 
 def main():
     user = user_functions.WelcomeUser()
@@ -84,14 +68,13 @@ def main():
                         "Hours": hour_formated,
                         "Day": day_formated
                         }
-                    json_insert_data.AddToJson(calcDict, calcinfos_path)
+                    #json_insert_data.AddToJson(calcDict, calcinfos_path)
                     print(f"Result: {result}")
                     cursor.execute(f"""
                     INSERT INTO CalcInfos
                     ({tables_formatted_calc}) VALUES
                     ('{calcDict["Calc Type"]}', '{calcDict["Operation"]}', '{hour_formated}', '{day_formated}', '{user['Name']}')""")
                     connection.commit()
-                    connection.close()
                 except ZeroDivisionError:
                     print("Division by zero is not allowed")
             case "2": #my informations
@@ -100,8 +83,9 @@ def main():
                 """result = menuFunctions.menu[optionmenu](calcinfos_path)
                 for i in result:
                     print(i)"""
-                cursor.execute(f"SELECT Operation FROM CalcInfos WHERE User = '{user['Name']}'")
-                result = cursor.fetchall() #[('10 ** 2 = 100',), ('20 / 2 = 10.0',)]
+                result = get_calculator_history(user)
+                #cursor.execute(f"SELECT Operation FROM CalcInfos WHERE User = '{user['Name']}'")
+                #result = cursor.fetchall() #[('10 ** 2 = 100',), ('20 / 2 = 10.0',)]
                 for i in result:
                     print(str(i)[2:-3]) #to print the result without the 2 first characters and without the last 3
             case "4": #current converter
@@ -132,19 +116,21 @@ def main():
                 match select_option:
                     case "1":
                         user_datas_to_csv = user_to_csv()
-                        menu_functions.menu[optionmenu](user_datas_to_csv, None)
+                        menu_functions.menu[optionmenu](user_datas_to_csv, user_csv_path)
                     case "2": 
                         calc_history_to_csv = calc_to_csv() 
-                        menu_functions.menu[optionmenu](None, calc_history_to_csv)
+                        menu_functions.menu[optionmenu](calc_history_to_csv, calc_csv_path)
                     case "3":
                         user_datas_to_csv = user_to_csv()
                         calc_history_to_csv = calc_to_csv() 
-                        menu_functions.menu[optionmenu](user_datas_to_csv, calc_history_to_csv)
+                        menu_functions.menu[optionmenu](user_datas_to_csv, user_csv_path)
+                        menu_functions.menu[optionmenu](calc_history_to_csv, calc_csv_path)
             case "7": #exit
                 print("Goodbye! See you later!")
+                connection.commit() #to save db changes on db
+                connection.close()
                 break
         time.sleep(1)
-connection.commit() #to save db changes on db
-connection.close()
+
 main()
 
