@@ -1,0 +1,9 @@
+pip install sqlite3
+pip install datetime
+pip install time
+pip install math
+pip install requests
+pip install pandas
+pip install os
+pip install csv
+pip install uuid
