@@ -6,6 +6,7 @@ import json
 import get_exchange_rate
 import export_data
 from math_challenge_update import math_challenges
+import adm_manage
 
 def exit_program(user,op,n1,n2): #this function was created to set a flag when the users want to get out
     return "EXIT"
@@ -26,7 +27,8 @@ menu = { #dict with functions inserted
     "4": get_exchange_rate.proccess_main,
     "5": math_challenges,
     "6": export_data.to_csv,
-    "7": exit_program
+    "7": exit_program,
+    "adm": adm_manage.adm_system
 }
 
 def menufunc():

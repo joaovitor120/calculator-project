@@ -39,8 +39,15 @@ def WelcomeUser():
         }
     elif repeated_user == "Y":
         name = input("Type your username: ")
-        while name not in NamesList:
-            name = input("I could not find you username at my database, please type your username again: ")
+        if name == "adm":
+            adm_password = '123'
+            adm_password_input = input("Hello, adm, please type the master password: ").strip()
+            if adm_password_input == adm_password:
+                return "adm"
+        else:
+            while name not in NamesList:
+                name = input("I could not find you username at my database, please type your username again: ")
+
         cursor.execute(f"""
         SELECT Year_born, Age FROM User WHERE Name = '{name}'
         """)

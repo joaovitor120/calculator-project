@@ -38,14 +38,15 @@ tables_formatted_calc = (", ".join(i for i in columns_calc))
 
 def main():
     user = user_functions.WelcomeUser()
-    user_datas_dict = user.copy() #copy user variable to add two new columns
-    user_datas_dict.update({
-        "Hours": hour_formated,
-        "Day": day_formated
-    })
-    json_insert_data.AddToJson(user_datas_dict, "./json_files/userinfos.json")
+    if user != "adm":
+        user_datas_dict = user.copy() #copy user variable to add two new columns
+        user_datas_dict.update({
+            "Hours": hour_formated,
+            "Day": day_formated
+        })
+        json_insert_data.AddToJson(user_datas_dict, "./json_files/userinfos.json")
 
-    print(f"Welcome,{user['Name']}, born in {user['Year Born']}, you receive an access to the JVBCalculator")
+        print(f"Welcome,{user['Name']}, born in {user['Year Born']}, you receive an access to the JVBCalculator")
     if user['New'] == True:
         cursor.execute(f"""
         INSERT INTO User

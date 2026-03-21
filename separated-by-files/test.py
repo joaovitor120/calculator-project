@@ -1,28 +1,10 @@
-"""import json
+a = 2
+b = 3 
+c = 4
 
-with open("./json_files/calcinfos.json", "r") as f:
-    content = f.read().strip()
-    content_decoded = json.loads(content)
-    operationsHistory = []
-    for i in content_decoded:
-        operationsHistory.append(i['Operation'])
-    print(operationsHistory)"""
-
-"""a = lambda a,b: (f"{a} ** {b} = {a ** b}")
-dict = {
-    "+": "plus",
-    "-": "subtraction"
-}
-operations = (" ".join([str(f',{i}') for i in dict]))
-print(operations)
-print(f"operation available is: {operations}")"""
-
-from datetime import datetime
-
-now = datetime.now()
-year = now.strftime("%Y")
-print(int(year))
-list = ["a", "b"]
-a,b = list
+def change():
+    pass
+a,b,c = change()
 print(a)
 print(b)
+print(c)
