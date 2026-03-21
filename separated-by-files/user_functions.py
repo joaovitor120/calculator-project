@@ -21,10 +21,10 @@ def WelcomeUser():
         repeated_user = input("Do you already use JVBCalculator(Y/N)? ").strip().upper()
     
     if repeated_user == "N":
-        name = input("Which username do you wanna be called? ").capitalize()
+        name = input("Which username do you wanna be called? ")
         while name in NamesList:
             name = input("This username is not available, please select another username: ")
-        age = int(input("How old are you? "))
+        age = int(input(f"How old are you, {name}? "))
         year = int(now.strftime("%Y"))
         bday = input("Do you already make birthiday this year?(Y/N)").upper()
 
@@ -48,22 +48,22 @@ def WelcomeUser():
             while name not in NamesList:
                 name = input("I could not find you username at my database, please type your username again: ")
 
-        cursor.execute(f"""
-        SELECT Year_born, Age FROM User WHERE Name = '{name}'
-        """)
-        dataset_user_data = cursor.fetchall()
-        dataset_data = []
-        for i in dataset_user_data[0]:
-            dataset_data.append(i)
+            cursor.execute(f"""
+            SELECT Year_born, Age FROM User WHERE Name = '{name}'
+            """)
+            dataset_user_data = cursor.fetchall()
+            dataset_data = []
+            for i in dataset_user_data[0]:
+                dataset_data.append(i)
 
-        yearBorn, age = dataset_data
-        user = {
-        "Name": name,
-        "Year Born": yearBorn,
-        "Age": age,
-        "New": False
-        }
-    return user #return a dict with all user info
+            yearBorn, age = dataset_data
+            user = {
+            "Name": name,
+            "Year Born": yearBorn,
+            "Age": age,
+            "New": False
+            }
+        return user #return a dict with all user info
 
 #function output
 def show_user_data(user):

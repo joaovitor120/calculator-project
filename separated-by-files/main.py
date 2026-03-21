@@ -47,11 +47,11 @@ def main():
         json_insert_data.AddToJson(user_datas_dict, "./json_files/userinfos.json")
 
         print(f"Welcome,{user['Name']}, born in {user['Year Born']}, you receive an access to the JVBCalculator")
-    if user['New'] == True:
-        cursor.execute(f"""
-        INSERT INTO User
-        ({tables_formatted}) VALUES
-        ('{user['Name']}', {user['Year Born']}, {user['Age']}, '{hour_formated}', '{day_formated}')""")
+        if user['New'] == True:
+            cursor.execute(f"""
+            INSERT INTO User
+            ({tables_formatted}) VALUES
+            ('{user['Name']}', {user['Year Born']}, {user['Age']}, '{hour_formated}', '{day_formated}')""")
 
 
     while True:

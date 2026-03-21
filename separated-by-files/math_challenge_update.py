@@ -115,26 +115,40 @@ def get_calculator_datas(range_min, range_med, range_max, index_min, index_max):
     op_symbol = random.choice((operations_list)[index_min:index_max])
     return num1, num2, op_symbol
 
-def ensure_integer_result_simple(result, num1,num2, op_symbol,index_min, index_med, op_index_min, op_index_max):
+def ensure_integer_result_simple(result, num1, num2, op_symbol,index_min, index_med, op_min, op_max, difficulty=None, num3=None, num4=None, op_symbol_exp_2=None, complex=False):
     if not isinstance(result, int): #if result not int
         numbers = list(range(index_min, index_med))
         if op_symbol == "/":
+            if op_max == operations_list_length-1: #to ensure that ** not will be selected
+                op_max = op_max - 1
             validates_num2 = [i for i in numbers if num1 % i == 0]
-            if validates_num2:
-                num2 = random.choice(validates_num2)
-                result = operations_type[op_symbol](num1,num2)
-            else: #if not numbers options for num2 --> choose another op_symbol and num2
-                while isinstance(result, int) == False:  #isistance return only True or False
-                    op_symbol = random.choice((operations_list)[op_index_min:op_index_max])
-                    result = operations_type[op_symbol](num1, num2)
-                    if isinstance(result, int):
-                        break
-                    else:
-                        num2_options = [i for i in numbers if isinstance((operations_type[op_symbol](num1, i)), int)]
-                        if num2_options:
-                            num2 = random.choice(num2_options)
-                            result = operations_type[op_symbol](num1, num2)
-    return num2, op_symbol, result
+            if validates_num2 and complex:
+                print("Generating the challenge, please wait")
+                num3, num4, op_symbol_exp_2, num2 = generate_challenge(difficulty, op_min, op_max, last_num=True)
+                for _ in range(5):
+                    num3, num4, op_symbol_exp_2, num2 = generate_challenge(difficulty, op_min, op_max, last_num=True)
+            while isinstance(result, int) == False:  #isistance return only True or False
+
+                op_symbol = random.choice((operations_list)[op_min:op_max])
+                result = operations_type[op_symbol](num1, num2)
+                if isinstance(result, int):
+                    break
+                else:
+                    num2_options = [i for i in numbers if isinstance((operations_type[op_symbol](num1, i)), int)]
+                    if complex and num2_options:
+                        op_max+=1 #back to the original value
+                        num3, num4, op_symbol_exp_2, num2 = generate_challenge(difficulty, op_min, op_max, last_num=True)
+                        while num2 not in num2_options:
+                            num3, num4, op_symbol_exp_2, num2 = generate_challenge(difficulty, op_min, op_max, last_num=True)
+                    elif num2_options:
+                        num2 = random.choice(num2_options)
+
+                
+    result = operations_type[op_symbol](num1, num2)
+    if complex:
+        return num3, num4, op_symbol_exp_2, num2, op_symbol, result
+    else: 
+     return num2, op_symbol, result
 
 def force_expoent_two(result, num1,num2,op_symbol, index_med, index_max):
         if op_symbol == "**" and num2 != 2:
@@ -164,7 +178,8 @@ def answer_retry_loop(num1,num2, op_symbol,user_result_answer, result, multiple_
 
 def generate_challenge(difficulty, op_min, op_max, last_num=False):
     if last_num:
-        num1, num2, op_symbol = get_calculator_datas(ranges_min(difficulty), ranges_med(difficulty), ranges_max(difficulty),op_min,op_max - 1)
+        difficulty = 'easy'
+        num1, num2, op_symbol = get_calculator_datas(ranges_min(difficulty), (ranges_med(difficulty)), ranges_max(difficulty) ,op_min,op_max - 1) #ensure that the result of this operation will be possible to make it mentally
     else:
         num1, num2, op_symbol = get_calculator_datas(ranges_min(difficulty), ranges_med(difficulty), ranges_max(difficulty),op_min,op_max)
     result = operations_type[op_symbol](num1, num2)
@@ -199,18 +214,19 @@ def challenge_simple(difficulty, op_min, op_max):
     execution_time = end_time - start_time
     print(f"Perfect, you answered correctly in {int(execution_time)} seconds, congratulations!")
     add_math_challenge_datas(expression, final_result, hour_formated, day_formated) #add to database
+
 def challenge_complex(difficulty, op_min, op_max):
     num1, num2, op_symbol_exp_1, result_exp_1 = generate_challenge(difficulty, op_min, op_max)
                     
     num3, num4, op_symbol_exp_2, result_exp_2 = generate_challenge(difficulty, op_min, op_max, last_num=True)
 
-    if op_max == operations_list_length-1:
-        op_symbol_center = random.choice((operations_list)[op_min:op_max-1])
+    if "*" in operations_list[op_min:op_max]:
+        op_symbol_center = random.choice((operations_list)[op_min:-1])
     else:
         op_symbol_center = random.choice((operations_list)[op_min:op_max])
     #print(op_symbol_center)
     final_result = operations_type[op_symbol_center](result_exp_1, result_exp_2)
-    result_exp_2, op_symbol_center, final_result = ensure_integer_result_simple(final_result,result_exp_1,result_exp_2,op_symbol_center,ranges_min(difficulty), ranges_med(difficulty),op_min, op_max)
+    num3, num4, op_symbol_exp_2, result_exp_2, op_symbol_center, final_result = ensure_integer_result_simple(final_result,result_exp_1,result_exp_2,op_symbol_center,ranges_min(difficulty), ranges_med(difficulty),op_min, op_max,difficulty, num3, num4, op_symbol_exp_2, complex=True,)
     #print(op_symbol_2)
     expression = f"({num1} {op_symbol_exp_1} {num2}) {op_symbol_center} ({num3} {op_symbol_exp_2} {num4}) = "
 

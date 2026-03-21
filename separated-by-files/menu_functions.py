@@ -28,7 +28,11 @@ menu = { #dict with functions inserted
     "5": math_challenges,
     "6": export_data.to_csv,
     "7": exit_program,
-    "adm": adm_manage.adm_system
+}
+menu_adm = {
+    "1": "See datas on the databases",
+    "2": "Update some data on the database",
+    "3": "Delete some data on the database"
 }
 
 def menufunc():
