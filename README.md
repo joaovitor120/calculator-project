@@ -86,3 +86,7 @@ This project is not just about calculations — it's about:
 - Practicing **real-world programming patterns**
 - Reinforcing **core Python fundamentals**
 - Building something **extendable and production-minded**
+
+## How to run
+`pip install -r requirements.txt`
+`python main.py`
