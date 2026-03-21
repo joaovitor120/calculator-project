@@ -88,5 +88,8 @@ This project is not just about calculations — it's about:
 - Building something **extendable and production-minded**
 
 ## How to run
-`pip install -r requirements.txt`
+`cd separeted-by-files`
+
+`pip install -r requirements.txt` 
+
 `python main.py`
