@@ -6,7 +6,7 @@ import json
 import get_exchange_rate
 import export_data
 from math_challenge_update import math_challenges
-import adm_manage
+from adm_manage import see_datas, update_datas, delete_datas
 
 def exit_program(user,op,n1,n2): #this function was created to set a flag when the users want to get out
     return "EXIT"
@@ -30,16 +30,24 @@ menu = { #dict with functions inserted
     "7": exit_program,
 }
 menu_adm = {
-    "1": "See datas on the databases",
-    "2": "Update some data on the database",
-    "3": "Delete some data on the database"
+    "1": see_datas,
+    "2": update_datas,
+    "3": delete_datas,
+    "4": exit_program
 }
 
-def menufunc():
-    print("\n MENU: \n 1:Calculator \n 2:My Informations \n 3:Calculator History \n 4:Currency converter \n 5:Mental Math Challenge \n 6:Export data \n 7:Exit \n")
-    optionmenu = input("Choose one of them options(1/2/3/4/5/6/7): ")
-    while optionmenu not in menu:
-        print("Invalid option. Please choose 1, 2, 3, 4, 5, 6 or 7.")
+def menufunc(adm=False):
+    if adm:
+        print(F"\n ADM MENU: \n 1: See datas on the databases \n 2: Update some data on the database \n 3: Delete some data on the databases \n 4: Exit \n")
+        optionmenu = input("Choose one of them options(1/2/3/4): ")
+        while optionmenu not in menu_adm:
+            print("Invalid option. Please choose 1, 2, 3, 4")
+            optionmenu = input("Choose one of them options(1/2/3/4): ")
+    else:
+        print("\n MENU: \n 1:Calculator \n 2:My Informations \n 3:Calculator History \n 4:Currency converter \n 5:Mental Math Challenge \n 6:Export data \n 7:Exit \n")
         optionmenu = input("Choose one of them options(1/2/3/4/5/6/7): ")
+        while optionmenu not in menu:
+            print("Invalid option. Please choose 1, 2, 3, 4, 5, 6 or 7.")
+            optionmenu = input("Choose one of them options(1/2/3/4/5/6/7): ")
     return optionmenu
 

@@ -42,8 +42,10 @@ def WelcomeUser():
         if name == "adm":
             adm_password = '123'
             adm_password_input = input("Hello, adm, please type the master password: ").strip()
-            if adm_password_input == adm_password:
-                return "adm"
+            while adm_password_input != adm_password:
+                print("This is not the master password. ")
+                adm_password_input = input("Please type the master password: ").strip()
+            return "adm"
         else:
             while name not in NamesList:
                 name = input("I could not find you username at my database, please type your username again: ")
