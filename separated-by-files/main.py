@@ -6,10 +6,10 @@ import menu_functions
 from json_files import json_insert_data
 import sqlite3
 import uuid
-from database import begginer_settings, get_calculator_history
+import database
 from adm_manage import see_datas, update_datas, delete_datas
 
-begginer_settings() # to create databases if not exists
+database.begginer_settings() # to create databases if not exists
 
 user_id = uuid.uuid4().bytes #to be insert in sqlite
 now = datetime.now()
@@ -38,7 +38,7 @@ tables_formatted_calc = (", ".join(i for i in columns_calc))
 
 
 def main():
-    user = user_functions.WelcomeUser()
+    user = user_functions.WelcomeUser() #return a dict with all user functions
     if user != "adm":
         adm = False
         user_datas_dict = user.copy() #copy user variable to add two new columns
@@ -96,7 +96,7 @@ def main():
                     """result = menuFunctions.menu[optionmenu](calcinfos_path)
                     for i in result:
                         print(i)"""
-                    result = get_calculator_history(user)
+                    result = database.get_calculator_history(user)
                     #cursor.execute(f"SELECT Operation FROM CalcInfos WHERE User = '{user['Name']}'")
                     #result = cursor.fetchall() #[('10 ** 2 = 100',), ('20 / 2 = 10.0',)]
                     for i in result:
