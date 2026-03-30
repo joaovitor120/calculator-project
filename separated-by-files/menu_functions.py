@@ -1,7 +1,7 @@
 import calculate_file
 import calculate_file
-import user_functions
-import user_functions
+import user
+import user
 import json
 import get_exchange_rate
 import export_data
@@ -22,7 +22,7 @@ def calcinfo(file):
 
 menu = { #dict with functions inserted
     "1": calculate_file.calculate,
-    "2": user_functions.show_user_data,
+    "2": user.show_user_data,
     "3": calcinfo,
     "4": get_exchange_rate.proccess_main,
     "5": math_challenges,
@@ -50,4 +50,3 @@ def menufunc(adm=False):
             print("Invalid option. Please choose 1, 2, 3, 4, 5, 6 or 7.")
             optionmenu = input("Choose one of them options(1/2/3/4/5/6/7): ")
     return optionmenu
-

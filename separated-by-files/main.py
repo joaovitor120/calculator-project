@@ -1,6 +1,6 @@
 import time
 from datetime import datetime
-import user_functions
+import user
 import calculate_file
 import menu_functions   
 from json_files import json_insert_data
@@ -38,22 +38,22 @@ tables_formatted_calc = (", ".join(i for i in columns_calc))
 
 
 def main():
-    user = user_functions.WelcomeUser() #return a dict with all user functions
-    if user != "adm":
+    user_datas = user.WelcomeUser() #return a dict with all user functions
+    if(user_datas)!= "adm":
         adm = False
-        user_datas_dict = user.copy() #copy user variable to add two new columns
+        user_datas_dict = user_datas.copy() #copy user variable to add two new columns
         user_datas_dict.update({
             "Hours": hour_formated,
             "Day": day_formated
         })
         json_insert_data.AddToJson(user_datas_dict, "./json_files/userinfos.json")
 
-        print(f"Welcome,{user['Name']}, born in {user['Year Born']}, you receive an access to the JVBCalculator")
-        if user['New'] == True:
+        print(f"Welcome,{user_datas['Name']}, born in {user_datas['Year Born']}, you receive an access to the JVBCalculator")
+        if user_datas['New'] == True:
             cursor.execute(f"""
             INSERT INTO User
             ({tables_formatted}) VALUES
-            ('{user['Name']}', {user['Year Born']}, {user['Age']}, '{hour_formated}', '{day_formated}')""")
+            ('{user_datas['Name']}', {user_datas['Year Born']}, {user_datas['Age']}, '{hour_formated}', '{day_formated}')""")
     else:
         adm = True
 
@@ -91,12 +91,12 @@ def main():
                     except ZeroDivisionError:
                         print("Division by zero is not allowed")
                 case "2": #my informations
-                    result = menu_functions.menu[optionmenu](user)
+                    result = menu_functions.menu[optionmenu](user_datas)
                 case "3": #calculator history
                     """result = menuFunctions.menu[optionmenu](calcinfos_path)
                     for i in result:
                         print(i)"""
-                    result = database.get_calculator_history(user)
+                    result = database.get_calculator_history(user_datas)
                     #cursor.execute(f"SELECT Operation FROM CalcInfos WHERE User = '{user['Name']}'")
                     #result = cursor.fetchall() #[('10 ** 2 = 100',), ('20 / 2 = 10.0',)]
                     for i in result:
