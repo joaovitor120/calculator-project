@@ -5,9 +5,3 @@ Ou: "Fazer backup" → copia o .db para uma pasta com data/hora
 Pode até enviar por e-mail (com smtplib, mas precisa de app password do Gmail)
 
 Muito útil quando o app crescer.
-
-2. Modo "desafio matemático" / quiz (volta à calculadora de forma divertida)
-
-Gera *contas aleatórias* (soma, subtração, multiplicação, potência) (respeitando os principios da matematica)
-Conta tempo, acertos, salva recorde pessoal no banco
-Níveis de dificuldade (F, M e D)
