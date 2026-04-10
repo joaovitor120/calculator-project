@@ -67,6 +67,10 @@ def main():
                     menu_functions.menu_adm[optionmenu]()
                 case "3":
                     menu_functions.menu_adm[optionmenu]()
+                case "4":
+                    print("Goodbay, see you later! ")
+                    time.sleep(1)
+                    break
         else:
             match optionmenu: #to avoid use if/elif/elif
                 case  "1": #calculator
