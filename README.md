@@ -159,45 +159,39 @@ The admin menu is completely separate from the regular user menu, including its 
 ```
 JVBCalculator/
 │
-├── main.py                  # Entry point. Orchestrates the main flow,
-│                              manages the menu loop, SQLite connection,
-│                              and integration between all modules.
+├── main.py
+├── requirements.txt
+├── README.md
+├── nextplans.txt
+├── .env
+├── .gitattributes
 │
-├── user.py                  # User authentication and registration.
-│                              Loads users from the database at startup.
-│                              Functions: WelcomeUser(), show_user_data()
+├── core/
+│   ├── calculate_file.py
+│   ├── menu_functions.py
+│   └── user.py
 │
-├── calculate_file.py        # Calculation logic.
-│                              Lambda dictionary per operation.
-│                              Functions: calculate(), get_operation(),
-│                              get_valid_operation(), get_numbers()
-│
-├── menu_functions.py        # Centralizes menus as dictionaries.
-│                              Maps each option to its handler function.
-│                              Menus: menu (user), menu_adm (admin)
-│
-├── math_challenge_update.py # Mental math challenge engine.
-│                              Random expression generation, integer result
-│                              validation, timer, and difficulty levels.
-│
-├── get_exchange_rate.py     # Currency API integration.
-│                              Converts USD/EUR/BTC to BRL in real time.
-│
-├── export_data.py           # Data export to CSV via pandas.
-│
-├── adm_manage.py            # Admin panel exclusive functions.
-│                              Database CRUD operations via terminal.
+├── features/
+│   ├── export_data.py
+│   ├── get_exchange_rate.py
+│   └── math_challenge_update.py
 │
 ├── database/
-│   └── database.db          # SQLite database — tables: User, CalcInfos
+│   ├── __init__.py
+│   ├── adm_manage.py
+│   ├── database_settings.py
+│   ├── db_specific_settings.py
+│   ├── sqlite_settings.py
+│   └── database.db
 │
-├── csv_exported/
-│   ├── User_data.csv
-│   └── Calc_datas.csv
-│
-└── json_files/
-    ├── userinfos.json
-    └── calcinfos.json
+└── data/
+    ├── csv_exported/
+    │   ├── Calc_datas.csv
+    │   └── User_data.csv
+    └── json_files/
+        ├── calcinfos.json
+        ├── userinfos.json
+        └── json_insert_data.py
 ```
 
 ### Main Data Flow
