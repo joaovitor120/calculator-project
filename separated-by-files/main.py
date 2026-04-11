@@ -7,7 +7,6 @@ from json_files import json_insert_data
 import sqlite3
 import uuid
 import database
-from adm_manage import see_datas, update_datas, delete_datas
 
 database.begginer_settings() # to create databases if not exists
 
@@ -39,7 +38,7 @@ tables_formatted_calc = (", ".join(i for i in columns_calc))
 
 def main():
     user_datas = user.WelcomeUser() #return a dict with all user functions
-    if(user_datas)!= "adm":
+    if(user_datas['Name'])!= "adm":
         adm = False
         user_datas_dict = user_datas.copy() #copy user variable to add two new columns
         user_datas_dict.update({
