@@ -1,9 +1,2 @@
 {
-    "python-envs.pythonProjects": [
-        {
-            "path": "separated-by-files",
-            "envManager": "ms-python.python:venv",
-            "packageManager": "ms-python.python:pip"
-        }
-    ]
 }
