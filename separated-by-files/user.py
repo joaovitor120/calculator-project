@@ -37,6 +37,7 @@ def WelcomeUser():
             "Age": age,
             "New": True
         }
+        return user
     elif repeated_user == "Y":
         name = input("Type your username: ")
         while name not in NamesList:

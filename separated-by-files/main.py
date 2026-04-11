@@ -24,7 +24,7 @@ day_formated = now.strftime("%d/%m/%Y") #get day data
     "**": lambda a,b: (f"{a} ** {b} = {a**b}")
 } #lambda for each operation type"""
 
-calcinfos_path = "./json_files/calcinfos.json"
+calcinfos_path = "./csv_exported/calcinfos.csv"
 user_csv_path = "./csv_exported/User_data.csv"
 calc_csv_path = "./csv_exported/Calc_datas.csv"
 
@@ -90,7 +90,7 @@ def main():
                         cursor.execute(f"""
                         INSERT INTO CalcInfos
                         ({tables_formatted_calc}) VALUES
-                        ('{calcDict["Calc Type"]}', '{calcDict["Operation"]}', '{hour_formated}', '{day_formated}', '{user['Name']}')""")
+                        ('{calcDict["Calc Type"]}', '{calcDict["Operation"]}', '{hour_formated}', '{day_formated}', '{user_datas['Name']}')""")
                         connection.commit()
                     except ZeroDivisionError:
                         print("Division by zero is not allowed")
@@ -101,7 +101,7 @@ def main():
                     for i in result:
                         print(i)"""
                     result = database.get_calculator_history(user_datas)
-                    #cursor.execute(f"SELECT Operation FROM CalcInfos WHERE User = '{user['Name']}'")
+                    #cursor.execute(f"SELECT Operation FROM CalcInfos WHERE User = '{user_datas['Name']}'")
                     #result = cursor.fetchall() #[('10 ** 2 = 100',), ('20 / 2 = 10.0',)]
                     for i in result:
                         print(str(i)[2:-3]) #to print the result without the 2 first characters and without the last 3
@@ -114,7 +114,7 @@ def main():
     2 - Export only my operations data
     3 - Export both
                         """)
-                    select_option = input("Please, type 1, 2 or 3 to choose one export option: ").split()
+                    select_option = input("Please, type 1, 2 or 3 to choose one export option: ").strip() #.strip() to remove blank spaces
                     def user_to_csv():
                         user_datas_to_csv = {}
                         for i in user_datas_dict:
@@ -122,7 +122,7 @@ def main():
                             
                             return user_datas_to_csv
                     def calc_to_csv():
-                        cursor.execute(f"SELECT CalcType, Operation FROM CalcInfos WHERE User = '{user['Name']}'")
+                        cursor.execute(f"SELECT CalcType, Operation FROM CalcInfos WHERE User = '{user_datas['Name']}'")
                         calc_history = cursor.fetchall()
                         calc_history_to_csv = {"CalcType": [],
                     "Operation": []}
