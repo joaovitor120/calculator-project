@@ -1,9 +1,9 @@
 import time
 from datetime import datetime
-import user
-import calculate_file
-import menu_functions   
-from json_files import json_insert_data
+import core.user as user
+from core import calculate_file 
+from core import menu_functions   
+from data.json_files import json_insert_data
 import sqlite3
 import uuid
 import database
@@ -23,9 +23,9 @@ day_formated = now.strftime("%d/%m/%Y") #get day data
     "**": lambda a,b: (f"{a} ** {b} = {a**b}")
 } #lambda for each operation type"""
 
-calcinfos_path = "./csv_exported/calcinfos.csv"
-user_csv_path = "./csv_exported/User_data.csv"
-calc_csv_path = "./csv_exported/Calc_datas.csv"
+calcinfos_path = "./data/csv_exported/calcinfos.csv"
+user_csv_path = "./data/csv_exported/User_data.csv"
+calc_csv_path = "./data/csv_exported/Calc_datas.csv"
 
 connection = sqlite3.connect("./database/database.db")
 cursor = connection.cursor()
@@ -45,7 +45,7 @@ def main():
             "Hours": hour_formated,
             "Day": day_formated
         })
-        json_insert_data.AddToJson(user_datas_dict, "./json_files/userinfos.json")
+        json_insert_data.AddToJson(user_datas_dict, "./data/json_files/userinfos.json")
 
         print(f"Welcome,{user_datas['Name']}, born in {user_datas['Year Born']}, you receive an access to the JVBCalculator")
         if user_datas['New'] == True:
@@ -109,9 +109,7 @@ def main():
                 case "5": #math challenges
                     result = menu_functions.menu[optionmenu]()
                 case "6": #export data
-                    print("""1 - Export only my user datas
-    2 - Export only my operations data
-    3 - Export both
+                    print("""1 - Export only my user datas\n2 - Export only my operations data\n3 - Export both
                         """)
                     select_option = input("Please, type 1, 2 or 3 to choose one export option: ").strip() #.strip() to remove blank spaces
                     def user_to_csv():

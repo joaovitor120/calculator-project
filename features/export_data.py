@@ -2,8 +2,8 @@ import csv
 import pandas as pd
 import os
 
-user_csv_path = "./csv_exported/User_data.csv"
-calc_csv_path = "./csv_exported/Calc_datas.csv"
+user_csv_path = "../data/csv_exported/User_data.csv"
+calc_csv_path = "../data/csv_exported/Calc_datas.csv"
 
 def to_csv(dict, path):
     if os.path.isfile(path):

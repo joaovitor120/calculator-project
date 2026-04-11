@@ -1,12 +1,10 @@
-import calculate_file
-import calculate_file
-import user
-import user
+from core import calculate_file as calculate_file
+from core import user
+from features import get_exchange_rate
+from features import export_data
 import json
-import get_exchange_rate
-import export_data
-from math_challenge_update import math_challenges
-from adm_manage import see_datas, update_datas, delete_datas
+from features.math_challenge_update import math_challenges
+from database.adm_manage import see_datas, update_datas, delete_datas
 
 def exit_program(user,op,n1,n2): #this function was created to set a flag when the users want to get out
     return "EXIT"
