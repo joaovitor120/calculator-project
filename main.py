@@ -67,7 +67,7 @@ def main():
                 case "3":
                     menu_functions.menu_adm[optionmenu]()
                 case "4":
-                    print("Goodbay, see you later! ")
+                    print("Goodbye, see you later! ")
                     time.sleep(1)
                     break
         else:
