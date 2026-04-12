@@ -54,7 +54,6 @@ def WelcomeUser():
             "Age": age,
             "New": True
         }
-        return user
     elif repeated_user == "Y":
         name = input("Type your username: ")
         while name not in NamesList:
@@ -65,7 +64,9 @@ def WelcomeUser():
             while adm_password_input != adm_password:
                 print("This is not the master password. ")
                 adm_password_input = input("Please type the master password: ").strip()
-            return "adm"
+            user = {
+                "Name" : name
+            }
         else:
 
             cursor.execute(f"""
@@ -83,7 +84,8 @@ def WelcomeUser():
             "Age": age,
             "New": False
             }
-        return user #return a dict with all user info
+        
+    return user #return a dict with user infos
 
 #function output
 def show_user_data(user):
