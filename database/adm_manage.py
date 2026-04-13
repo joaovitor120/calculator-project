@@ -26,8 +26,24 @@ def get_table_columns(table_name):
     for column_info in table_info:
         column = column_info[1]
         columns.append(column)
-    return columns #return a dict 
-    
+    return columns #return a list 
+
+def get_line_type(table_name, line):
+    column_type = ''
+    cursor.execute(f"PRAGMA table_info('{table_name}')") #see CalcInfos informations
+    table_info = cursor.fetchall()
+    i = 1
+    for column_info in table_info:
+        if i == line:
+            column_type = column_info[2]
+        else:
+            pass
+        i+=1
+    return column_type
+
+def get_new_value(value_type):
+    new_value = input("Type the new value do you want do update: ")
+    return value_type(new_value)
 def see_datas(): #see datas on the database
     db = get_db_table_input()
     cursor.execute(f"SELECT * FROM {tables[db - 1]}")
@@ -62,6 +78,8 @@ def update_datas(): #update datas on the database
     line_selected_label = (f"Type the line do you want to update {((str(lines_qtd)).replace("[", "(").replace("]", ")"))}: ")
     line_selected = input(line_selected_label)
     line_selected = input_verified(line_selected, lines_qtd, line_selected_label)
+    line_type = get_line_type('CalcInfos', 1)
+    print(line_type)
     #continue here implementing the update function
     
 def delete_datas(): #delete datas on the database
