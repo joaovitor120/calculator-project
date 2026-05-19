@@ -1,87 +1,145 @@
-#here i will have some adm's functions
+# Admin CRUD functions
 import sqlite3
+from pathlib import Path
 
-connection = sqlite3.connect("./database/database.db")
+DB_PATH = Path(__file__).resolve().parent / "database.db"
+
+connection = sqlite3.connect(DB_PATH)
 cursor = connection.cursor()
-tables = ["CalcInfos", "User"]
-options_available = ['1', '2']
-databases_availables = ("1 - Calculation informations \n2 - User Informations")
-input_label = ("Please type 1/2: ")
 
-def input_verified(user_input, options_available, input_label):
-    while user_input not in options_available: #only accepted 1/2 options
-        print(f"Please, type a valid option.")
-        user_input = input(input_label)
+tables = {
+    "1": "CalcInfos",
+    "2": "User",    
+}
+
+databases_availables = "1 - Calculation informations\n2 - User Informations"
+
+
+def verify_input(user_input, options_available, input_label):
+    while user_input not in options_available:
+        print("Please, type a valid option.")
+        user_input = input(input_label).strip()
     return user_input
+
+
 def get_db_table_input():
     print(databases_availables)
-    db_selected_by_user = input()
-    db_selected_by_user = input_verified(db_selected_by_user, options_available, input_label)
-    return int(db_selected_by_user)
+    db_selected = input("Please type 1/2: ").strip()
+    db_selected = verify_input(db_selected, tables.keys(), "Please type 1/2: ")
+    return tables[db_selected]
+
 
 def get_table_columns(table_name):
-    columns = []
-    cursor.execute(f"PRAGMA table_info('{table_name}')") #see CalcInfos informations
+    cursor.execute(f"PRAGMA table_info({table_name})")
     table_info = cursor.fetchall()
-    for column_info in table_info:
-        column = column_info[1]
-        columns.append(column)
-    return columns #return a list 
+    return [column[1] for column in table_info]
 
-def get_line_type(table_name, line):
-    column_type = ''
-    cursor.execute(f"PRAGMA table_info('{table_name}')") #see CalcInfos informations
-    table_info = cursor.fetchall()
-    i = 1
-    for column_info in table_info:
-        if i == line:
-            column_type = column_info[2]
-        else:
-            pass
-        i+=1
-    return column_type
 
-def get_new_value(value_type):
-    new_value = input("Type the new value do you want do update: ")
-    return value_type(new_value)
-def see_datas(): #see datas on the database
-    db = get_db_table_input()
-    cursor.execute(f"SELECT * FROM {tables[db - 1]}")
-    datas = cursor.fetchall() #touple
-    for i in datas:
-        print(i)
-        
-def update_datas(): #update datas on the database
-    print("These are the columns at CalcInfos:")
-    columns = get_table_columns("CalcInfos")
-    index_columns = [str(i+1) for i, x in enumerate(columns)]
-    i = 0
-    for column in columns:
-        print(f"{column}({i+1})")
-        i+=1
-    column_selected_label = "Which column do you want to update:"
-    column_selected_input = input(column_selected_label)
-    column_selected = input_verified(column_selected_input, (columns + index_columns), column_selected_label)
+def see_datas():
+    table_name = get_db_table_input()
+    show_datas_from_table(table_name)
 
-    if column_selected in index_columns:
-        column_selected = columns[(int(column_selected) - 1)]
-    print("\n" + f"lines FROM column {column_selected}: ")
-    cursor.execute(f"SELECT {column_selected} FROM CalcInfos")
-    lines = cursor.fetchall()
-    i = 1
-    lines_qtd = []
-    for line in lines:
-        print(f"{i} - {line}")
-        lines_qtd.append(str(i))
-        i+=1
-    print("\n")
-    line_selected_label = (f"Type the line do you want to update {((str(lines_qtd)).replace("[", "(").replace("]", ")"))}: ")
-    line_selected = input(line_selected_label)
-    line_selected = input_verified(line_selected, lines_qtd, line_selected_label)
-    line_type = get_line_type('CalcInfos', 1)
-    print(line_type)
-    #continue here implementing the update function
+
+def get_record_by_id(table_name, record_id):
+    cursor.execute(f"SELECT * FROM {table_name} WHERE id = ?", (record_id,))
+    return cursor.fetchone()
+
+
+def update_datas():
+    table_name = get_db_table_input()
+
+    show_datas_from_table(table_name)
+
+    record_id = input("\nType the ID of the record you want to update: ").strip()
+
+    if not record_id.isdigit():
+        print("Invalid ID.")
+        return
+
+    record = get_record_by_id(table_name, record_id)
+
+    if not record:
+        print("Record not found.")
+        return
+
+    columns = get_table_columns(table_name)
+    editable_columns = [column for column in columns if column != "id"]
+
+    print("\nColumns available to update:")
+    for index, column in enumerate(editable_columns, start=1):
+        print(f"{index} - {column}")
+
+    column_option = input("Choose the column number: ").strip()
+    valid_options = [str(i) for i in range(1, len(editable_columns) + 1)]
+
+    column_option = verify_input(
+        column_option,
+        valid_options,
+        "Choose a valid column number: "
+    )
+
+    column_selected = editable_columns[int(column_option) - 1]
+    new_value = input(f"Type the new value for {column_selected}: ").strip()
+
+    confirm = input(
+        f"Confirm update {column_selected} to '{new_value}'? (Y/N): "
+    ).strip().upper()
+
+    if confirm != "Y":
+        print("Update canceled.")
+        return
+
+    cursor.execute(
+        f"UPDATE {table_name} SET {column_selected} = ? WHERE id = ?",
+        (new_value, record_id)
+    )
+    print(f"Rows updated: {cursor.rowcount}")
+    connection.commit()
+
+    print("Record updated successfully.")
+
+
+def delete_datas():
+    table_name = get_db_table_input()
+
+    show_datas_from_table(table_name)
+
+    record_id = input("\nType the ID of the record you want to delete: ").strip()
+
+    if not record_id.isdigit():
+        print("Invalid ID.")
+        return
+
+    record = get_record_by_id(table_name, record_id)
+
+    if not record:
+        print("Record not found.")
+        return
+
+    print(f"\nSelected record: {record}")
+
+    confirm = input("Are you sure you want to delete this record? (Y/N): ").strip().upper()
+
+    if confirm != "Y":
+        print("Delete canceled.")
+        return
+
+    cursor.execute(f"DELETE FROM {table_name} WHERE id = ?", (record_id,))
+    connection.commit()
+
+    print("Record deleted successfully.")
     
-def delete_datas(): #delete datas on the database
-    pass
 
+def show_datas_from_table(table_name):
+    cursor.execute(f"SELECT * FROM {table_name}")
+    datas = cursor.fetchall()
+
+    if not datas:
+        print("No data found.")
+        return
+
+    columns = get_table_columns(table_name)
+    print("\n" + " | ".join(columns))
+
+    for row in datas:
+        print(row)

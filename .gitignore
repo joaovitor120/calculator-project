@@ -1,0 +1,44 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local databases and runtime data
+*.db
+*.sqlite
+*.sqlite3
+database/*.db
+database/*.sqlite
+database/*.sqlite3
+data/csv_exported/*.csv
+
+# Generated JSON runtime logs
+data/json_files/userinfos.json
+data/json_files/calcinfos.json
+
+# Test and coverage output
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Packaging/build output
+build/
+dist/
+*.egg-info/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

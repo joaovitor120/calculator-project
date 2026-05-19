@@ -1,7 +1,7 @@
 1. Exportação + backup automático
-
-Menu: "Exportar meus dados" → gera JSON/CSV de tudo (usuário + cálculos + o que mais tiver)
 Ou: "Fazer backup" → copia o .db para uma pasta com data/hora
 Pode até enviar por e-mail (com smtplib, mas precisa de app password do Gmail)
-
 Muito útil quando o app crescer.
+
+2. Adm_manage
+Acabar funcoes do adm para fechar CRUD
